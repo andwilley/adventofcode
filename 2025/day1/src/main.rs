@@ -1,5 +1,6 @@
 use std::io::{self, BufRead, Cursor};
 
+// TODO part 2
 fn main() -> io::Result<()> {
     let input = include_str!("../data/input.txt");
     let reader = io::BufReader::new(Cursor::new(input));
