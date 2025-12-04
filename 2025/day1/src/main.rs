@@ -1,0 +1,23 @@
+use std::io::{self, BufRead, Cursor};
+
+fn main() -> io::Result<()> {
+    let input = include_str!("../data/input.txt");
+    let reader = io::BufReader::new(Cursor::new(input));
+    let mut cur = 50;
+    let mut ans = 0;
+    for line_result in reader.lines() {
+        let line = line_result?;
+        let mut chars = line.chars();
+        let dir = chars.nth(0).expect("Should exist");
+        let mvmt: i64 = chars.collect::<String>().parse().unwrap();
+        let mv = if dir == 'L' { -1 * mvmt } else { mvmt };
+        cur = (cur + mv).rem_euclid(100);
+        if cur == 0 {
+            ans += 1
+        }
+    }
+
+    println!("{ans}");
+
+    return Ok(());
+}
