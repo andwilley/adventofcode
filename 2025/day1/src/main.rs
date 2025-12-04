@@ -12,10 +12,17 @@ fn main() -> io::Result<()> {
         let dir = chars.nth(0).expect("Should exist");
         let mvmt: i64 = chars.collect::<String>().parse().unwrap();
         let mv = if dir == 'L' { -1 * mvmt } else { mvmt };
-        cur = (cur + mv).rem_euclid(100);
-        if cur == 0 {
-            ans += 1
-        }
+        let mut zero_passes = 0;
+        cur = {
+            let raw = cur + mv;
+            if raw <= 0 {
+                zero_passes = (if cur == 0 { 0 } else { 1 }) + (raw.abs() / 100);
+            } else if raw >= 100 {
+                zero_passes = raw / 100;
+            };
+            raw.rem_euclid(100)
+        };
+        ans += zero_passes;
     }
 
     println!("{ans}");
