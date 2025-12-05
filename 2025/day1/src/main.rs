@@ -1,9 +1,6 @@
 use std::io::{self, BufRead, Cursor};
 
-// TODO part 2
-fn main() -> io::Result<()> {
-    let input = include_str!("../data/input.txt");
-    let reader = io::BufReader::new(Cursor::new(input));
+fn count_zeros(reader: io::BufReader<Cursor<&str>>) -> io::Result<i64> {
     let mut cur = 50;
     let mut ans = 0;
     for line_result in reader.lines() {
@@ -24,8 +21,21 @@ fn main() -> io::Result<()> {
         };
         ans += zero_passes;
     }
+    Ok(ans)
+}
+
+fn main() -> io::Result<()> {
+    let input = include_str!("../data/input.txt");
+    let reader = io::BufReader::new(Cursor::new(input));
+    let ans = count_zeros(reader)?;
 
     println!("{ans}");
 
     return Ok(());
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_fn() {}
 }
