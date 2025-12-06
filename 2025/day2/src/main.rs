@@ -27,7 +27,7 @@ where
  *
  * After the first, for each char in the string that is the same as the first, consider everything
  * we've seen before that a possible repeater. Stack up these repeaters until we can invalidate
- * them via: at the end their length they don't devide into the string length or at any point they
+ * them via: at the end their length they don't divide into the string length or at any point they
  * don't continue to repeat. True (has duplicating pattern) means that there were repeaters left in
  * the set at the very end.
  */
