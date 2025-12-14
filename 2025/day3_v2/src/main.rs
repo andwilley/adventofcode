@@ -25,10 +25,11 @@ pub(crate) fn sift<const N: usize>(nums: Vec<u32>) -> u64 {
     for n in front.iter().rev() {
         let mut cur = *n;
         for i in 0..N {
-            if cur < ans[i] {
+            if cur >= ans[i] {
+                swap(&mut cur, &mut ans[i]);
+            } else {
                 break;
             };
-            swap(&mut cur, &mut ans[i]);
         }
     }
     let base: u64 = 10;
