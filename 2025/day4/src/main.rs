@@ -24,7 +24,6 @@ where
             index += 1;
             let point = Point::from_index(index, width as i32);
             if char == '@' {
-                rolls.insert(point, Some(0));
                 Some(point)
             } else {
                 rolls.insert(point, None);
@@ -43,13 +42,18 @@ where
                             .and_then(|y| points[to_index(y, width as i32)])
                     })
                     .count();
+                rolls.insert(roll, Some(count as i32));
                 PointCount { p: roll, count }
             })
         })
         .filter(|p| p.count < 4)
         .map(|p| p.p)
         .collect();
-    Ok(part(&mut removes, &mut rolls, (height as i32, width as i32)))
+    Ok(part(
+        &mut removes,
+        &mut rolls,
+        (height as i32, width as i32),
+    ))
 }
 
 pub(crate) fn part_1(
@@ -61,11 +65,26 @@ pub(crate) fn part_1(
 }
 
 pub(crate) fn part_2(
-    _: &mut Vec<Point<i32>>,
-    _: &mut HashMap<Point<i32>, Option<i32>>,
-    _: (i32, i32),
+    removes: &mut Vec<Point<i32>>,
+    rolls: &mut HashMap<Point<i32>, Option<i32>>,
+    (h, w): (i32, i32),
 ) -> i32 {
-    10
+    let mut count = 0;
+    while let Some(roll) = removes.pop() {
+        count += 1;
+        for offset in EIGHT_CELLS.iter() {
+            let offset_point = validate_grid(roll + *offset, (h, w));
+            if let Some(v) = offset_point.and_then(|op| rolls.get_mut(&op)) {
+                if let Some(x) = *v {
+                    if x == 4 {
+                        removes.push(offset_point.unwrap());
+                    }
+                    *v = Some(x - 1);
+                };
+            }
+        }
+    }
+    count
 }
 
 const EIGHT_CELLS: [Point<i32>; 8] = [
@@ -138,7 +157,7 @@ fn main() -> io::Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{forklift, part_1};
+    use crate::{forklift, part_1, part_2};
     use std::io::{self, Cursor};
 
     const TEST_INPUT: &str = "\
@@ -160,10 +179,10 @@ mod tests {
         assert_eq!(ans, 13);
     }
 
-    // #[test]
-    // fn part2() {
-    //     let reader = io::BufReader::new(Cursor::new(TEST_INPUT));
-    //     let ans = forklift(reader, part_2).expect("");
-    //     assert_eq!(ans, 43);
-    // }
+    #[test]
+    fn part2() {
+        let reader = io::BufReader::new(Cursor::new(TEST_INPUT));
+        let ans = forklift(reader, part_2).expect("");
+        assert_eq!(ans, 43);
+    }
 }
