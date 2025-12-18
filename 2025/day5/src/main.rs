@@ -14,7 +14,7 @@ where
     for line_result in reader.lines() {
         let line_untrimmed = line_result?;
         let line = line_untrimmed.trim();
-        if line == "\n" || line == "" {
+        if line == "" {
             next = true;
             continue;
         }
@@ -46,7 +46,7 @@ pub(crate) fn part_1(rmap: RangeInclusiveSet<i64>, inputs: Vec<i64>) -> u64 {
 pub(crate) fn part_2(rmap: RangeInclusiveSet<i64>, _: Vec<i64>) -> u64 {
     let mut ans = 0;
     for r in rmap.iter() {
-        ans += (r.end() - r.start()).abs() + 1;
+        ans += r.end() - r.start() + 1;
     }
     ans as u64
 }

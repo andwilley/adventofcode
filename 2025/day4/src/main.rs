@@ -116,8 +116,6 @@ impl<T: Copy + Div<Output = T> + Rem<Output = T>> Point<T> {
     }
 }
 
-// test
-
 impl<T: Copy + Add<Output = T>> Add for Point<T> {
     type Output = Point<T>;
 
