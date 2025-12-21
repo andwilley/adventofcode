@@ -12,6 +12,8 @@ enum Op {
     Multiply,
 }
 
+const BASE: u32 = 10;
+
 pub(crate) fn math<F>(reader: io::BufReader<Cursor<&str>>, part: F) -> io::Result<u64>
 where
     F: Fn(&[Equation]) -> u64,
@@ -72,12 +74,10 @@ fn next_slice(input: &[Vec<char>], index: usize) -> Option<Vec<char>> {
     if all_spaces { None } else { Some(tmp) }
 }
 
-const BASE: i64 = 10;
-
 fn to_int(v: &[i64]) -> i64 {
     let mut res: i64 = 0;
     for (i, n) in v.iter().rev().enumerate() {
-        res += BASE.pow(i as u32) * *n;
+        res += (BASE.pow(i as u32) * *n as u32) as i64;
     }
     res
 }
@@ -88,7 +88,7 @@ pub(crate) fn part_1(eqs: &[Equation]) -> u64 {
     for eq in eqs {
         let nums = eq.operands.iter().map(|l| {
             l.iter()
-                .filter_map(|&n| n.to_digit(10).map(|d| d as i64))
+                .filter_map(|&n| n.to_digit(BASE).map(|d| d as i64))
                 .collect::<Vec<i64>>()
         });
         match eq.operator {
@@ -99,9 +99,6 @@ pub(crate) fn part_1(eqs: &[Equation]) -> u64 {
     ans as u64
 }
 
-/// Need to reparse above. Split into chars first. Then for each slice of the 2D array,
-/// buffer slices until all levels are space, then start the next equation once one level is not
-/// space. Pass this list of equation stucts to parts.
 #[allow(dead_code)]
 pub(crate) fn part_2(eqs: &[Equation]) -> u64 {
     let mut ans = 0;
@@ -110,7 +107,7 @@ pub(crate) fn part_2(eqs: &[Equation]) -> u64 {
         for i in 0..eq.operands[0].len() {
             let mut n: Vec<i64> = Vec::new();
             for j in 0..eq.operands.len() {
-                if let Some(v) = eq.operands[j][i].to_digit(10) {
+                if let Some(v) = eq.operands[j][i].to_digit(BASE) {
                     n.push(v as i64)
                 }
             }
